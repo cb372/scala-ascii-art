@@ -19,10 +19,10 @@ object AsciiArt {
 
 	def chooseChar(rgbPeak:Double) = rgbPeak match {
 		case 0 => asciiChars.last
-			case n => {
-				val index = ((asciiChars.length * (rgbPeak / 255)) - (0.5)).toInt
-					asciiChars(index)
-			}
+		case n => {
+			val index = ((asciiChars.length * (rgbPeak / 255)) - (0.5)).toInt
+			asciiChars(index)
+		}
 	}
 
 	def charToSpan(red:Int, green:Int, blue:Int, char:String) = 
