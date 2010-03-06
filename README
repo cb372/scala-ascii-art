@@ -1,0 +1,5 @@
+A simple Ascii art generator in Scala.
+
+I wrote this to help me learn Scala syntax, Java interop and basic programming style. The algorithm itself is just a ripoff from this blog:
+
+http://www.bestinclass.dk/index.php/2010/02/my-tribute-to-steve-ballmer/
