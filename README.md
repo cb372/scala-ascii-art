@@ -12,13 +12,18 @@ http://www.bestinclass.dk/index.php/2010/02/my-tribute-to-steve-ballmer/
 
 ## Run
 
-    ./run.sh <args>
+    ./run.sh inputUrl [outputFile [outputWidth]]
+    ./run.sh flickr keyword
 
 Pass either a local file or a URL:
 
     ./run.sh photos/foo.jpg
 
     ./run.sh http://www.example.com/bar.png
+
+Optionally set the width (in characters) of the output. If it is not set, the generator will try to guess a reasonable size.
+
+    ./run.sh photos/foo.jpg 100
 
 Optionally pass an output file to save your amazing Ascii art for posterity. Save as either text or HTML.
 
@@ -28,4 +33,4 @@ Optionally pass an output file to save your amazing Ascii art for posterity. Sav
 
 If one Ascii art is not enough for you, use Flickr to generate an endless (ahem, not actually endless) stream of colourful characters.
 
-    ./run.sh flick cats
+    ./run.sh flickr cats
