@@ -9,6 +9,8 @@ trait AsciifierModule {
 
 trait Asciifier { 
 	def asciify(image: BufferedImage): String
+  val maxSensibleWidth: Int
+  val maxSensibleHeight: Int
 }
 
 trait AsciifierUtil {
@@ -37,6 +39,8 @@ trait AsciifierUtil {
 }
 
 class PlainTextAsciifier extends Asciifier with AsciifierUtil {
+  val maxSensibleWidth = 120
+  val maxSensibleHeight = 50
 
   import com.github.cb372.rainbow.{Rainbow, Colour}
   import Colour.spellColourProperly
@@ -46,7 +50,7 @@ class PlainTextAsciifier extends Asciifier with AsciifierUtil {
       val char = chooseChar(rgbMax(pixel))
       (char, pixel)
     }
-    lines.map(line => Rainbow.rainbowify(line, escape = false)).mkString("\n")
+    lines.map(line => "        " + Rainbow.rainbowify(line, escape = false)).mkString("\n")
   }
 
 }
@@ -54,6 +58,8 @@ class PlainTextAsciifier extends Asciifier with AsciifierUtil {
 import scala.xml._
 
 class HtmlAsciifier extends Asciifier with AsciifierUtil {
+  val maxSensibleWidth = 800 
+  val maxSensibleHeight = 600
 
   def asciify(image: BufferedImage) = {
     val lines = mapImage(image) { pixel =>

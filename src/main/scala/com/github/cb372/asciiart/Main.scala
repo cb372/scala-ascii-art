@@ -6,30 +6,46 @@ import scala.xml._
 object Main extends App {
 
   args.toList match {
-    case "flickr" :: keyword :: width :: _ => {
+    case "flickr" :: keyword :: _ => {
       val generator = buildGenerator(new HttpLoader, new PlainTextAsciifier)
       val imageUrls: Seq[String] = getFlickrSearchResults(keyword)
       for (url <- imageUrls) {
-        generator.run(url, width.toInt, PrintToScreen)
+        generator.run(url, None, PrintToScreen)
         println()
         Thread.sleep(500)
       }
     }
-    case url :: width :: xs => {
+    case url :: xs => {
       val loader = chooseLoader(url)
-      val outputFormat = chooseOutputFormat(xs)
+      val (outputFormat, widthSetting) = xs match {
+        case Nil => (PrintToScreen, None)
+        case Intejarr(width) :: _ => (PrintToScreen, Some(width))
+        case filename :: Intejarr(width) :: _ => (WriteToFile(new File(filename)), Some(width))
+        case filename :: _ => (WriteToFile(new File(filename)), None)
+      }
       val asciifier = chooseAsciifier(outputFormat)
       val generator = buildGenerator(loader, asciifier)
-        generator.run(url, width.toInt, outputFormat)
+      generator.run(url, widthSetting, outputFormat)
     }
     case _ => printUsage()
   }
 
+  // Extractor for integers
+  object Intejarr {
+    def unapply(x: String): Option[Int] = 
+      try {
+        Some(x.toInt)
+      } catch {
+        case e: Exception => None
+      }
+  }
+
+
   def printUsage() {
     println("Usage:") 
-    println("Main flickr keyword                        # grab a new image from Flickr every few seconds")
-    println("Main inputUrl outputWidth                  # print to screen")
-    println("Main inputUrl outputWidth outputFile.html  # output to HTML file")
+    println("Main flickr keyword                         # grab a new image from Flickr every few seconds")
+    println("Main inputUrl [outputWidth]                 # print to screen")
+    println("Main inputUrl outputFile.html [outputWidth] # output to HTML file")
   }
 
   def getFlickrSearchResults(keyword: String): Seq[String] = {
@@ -53,11 +69,6 @@ object Main extends App {
       else
         new FileLoader
 
-  def chooseOutputFormat(args: Seq[String]): OutputFormat = args match {
-    case Nil => PrintToScreen
-    case filename :: xs => WriteToFile(new File(filename))
-  }
-
   def chooseAsciifier(outputFormat: OutputFormat): Asciifier = outputFormat match {
     case PrintToScreen => new PlainTextAsciifier
     case WriteToFile(file) if file.getName.endsWith(".html") => new HtmlAsciifier
@@ -68,6 +79,7 @@ object Main extends App {
     // bake the cake!
     new AsciiArtGenerator 
                with ImageLoaderModule 
+               with ImageScalerModule 
                with AsciifierModule { 
       val imageLoader = loaderImpl
       val asciifier = asciifierImpl 

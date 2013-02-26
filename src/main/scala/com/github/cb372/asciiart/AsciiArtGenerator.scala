@@ -7,13 +7,13 @@ sealed trait OutputFormat
 case object PrintToScreen extends OutputFormat
 case class WriteToFile(file: File) extends OutputFormat
 
-trait AsciiArtGenerator extends ImageScaler {
-  self: ImageLoaderModule with AsciifierModule =>
+trait AsciiArtGenerator {
+  self: ImageLoaderModule with ImageScalerModule with AsciifierModule =>
 
-  def run(inputUrl: String, outputWidth: Int, outputFormat: OutputFormat) {
+  def run(inputUrl: String, outputWidthSetting: Option[Int], outputFormat: OutputFormat) {
     for {
       originalImage <- imageLoader.loadImage(inputUrl)
-      scaledImage = scale(originalImage, outputWidth)
+      scaledImage = scale(originalImage, outputWidthSetting)
       ascii = asciifier.asciify(scaledImage)
     } yield
       outputFormat match {
