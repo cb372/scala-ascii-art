@@ -9,6 +9,5 @@
   cross-versioned: false
 [repositories]
   local
-  scala-tools-releases
   Chris Birchall's Maven repo: http://cb372.github.com/m2/releases
   maven-central
