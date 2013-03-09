@@ -2,37 +2,56 @@ package com.github.cb372.asciiart
 
 import java.io.File
 import scala.xml._
+import sbt._
 
-object Main extends App {
+class AppMain extends xsbti.AppMain {
 
-  args.toList match {
-    case "flickr" :: keyword :: _ => {
-      val generator = buildGenerator(new HttpLoader, new PlainTextAsciifier)
-      val imageUrls: Seq[String] = getFlickrSearchResults(keyword)
-      for (url <- imageUrls) {
-        generator.run(url, None, PrintToScreen)
-        println()
-        Thread.sleep(500)
+  def run(configuration: xsbti.AppConfiguration): Exit =
+    new Exit (
+      try {
+        Main.main(configuration.arguments)
+        0
+      } catch {
+        case e: Throwable => 1
       }
-    }
-    case url :: xs => {
-      val loader = chooseLoader(url)
-      val (outputFormat, widthSetting) = xs match {
-        case Nil => (PrintToScreen, None)
-        case Intejarr(width) :: _ => (PrintToScreen, Some(width))
-        case filename :: Intejarr(width) :: _ => (WriteToFile(new File(filename)), Some(width))
-        case filename :: _ => (WriteToFile(new File(filename)), None)
+    )
+}
+
+class Exit(val code: Int) extends xsbti.Exit
+
+object Main {
+
+  def main(args: Array[String]): Unit = {
+    System.setProperty("java.awt.headless", "true")
+    args.toList match {
+      case "flickr" :: keyword :: _ => {
+        val generator = buildGenerator(new HttpLoader, new PlainTextAsciifier)
+        val imageUrls: Seq[String] = getFlickrSearchResults(keyword)
+        for (url <- imageUrls) {
+          generator.run(url, None, PrintToScreen)
+          println()
+          Thread.sleep(500)
+        }
       }
-      val asciifier = chooseAsciifier(outputFormat)
-      val generator = buildGenerator(loader, asciifier)
-      generator.run(url, widthSetting, outputFormat)
+      case url :: xs => {
+        val loader = chooseLoader(url)
+        val (outputFormat, widthSetting) = xs match {
+          case Nil => (PrintToScreen, None)
+            case Intejarr(width) :: _ => (PrintToScreen, Some(width))
+              case filename :: Intejarr(width) :: _ => (WriteToFile(new File(filename)), Some(width))
+                case filename :: _ => (WriteToFile(new File(filename)), None)
+        }
+        val asciifier = chooseAsciifier(outputFormat)
+        val generator = buildGenerator(loader, asciifier)
+        generator.run(url, widthSetting, outputFormat)
+      }
+      case _ => printUsage()
     }
-    case _ => printUsage()
   }
 
   // Extractor for integers
   object Intejarr {
-    def unapply(x: String): Option[Int] = 
+    def unapply(x: String): Option[Int] =
       try {
         Some(x.toInt)
       } catch {
@@ -40,9 +59,8 @@ object Main extends App {
       }
   }
 
-
   def printUsage() {
-    println("Usage:") 
+    println("Usage:")
     println("Main flickr keyword                         # grab a new image from Flickr every few seconds")
     println("Main inputUrl [outputWidth]                 # print to screen")
     println("Main inputUrl outputFile.html [outputWidth] # output to HTML file")
