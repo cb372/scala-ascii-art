@@ -37,9 +37,9 @@ object Main {
         val loader = chooseLoader(url)
         val (outputFormat, widthSetting) = xs match {
           case Nil => (PrintToScreen, None)
-            case Intejarr(width) :: _ => (PrintToScreen, Some(width))
-              case filename :: Intejarr(width) :: _ => (WriteToFile(new File(filename)), Some(width))
-                case filename :: _ => (WriteToFile(new File(filename)), None)
+          case Intejarr(width) :: _ => (PrintToScreen, Some(width))
+          case filename :: Intejarr(width) :: _ => (WriteToFile(new File(filename)), Some(width))
+          case filename :: _ => (WriteToFile(new File(filename)), None)
         }
         val asciifier = chooseAsciifier(outputFormat)
         val generator = buildGenerator(loader, asciifier)
