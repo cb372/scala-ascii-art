@@ -10,4 +10,5 @@
 [repositories]
   local
   Chris Birchall's Maven repo: http://cb372.github.com/m2/releases
+  Typesafe releases: http://repo.typesafe.com/typesafe/releases
   maven-central
