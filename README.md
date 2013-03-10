@@ -12,8 +12,18 @@ http://www.bestinclass.dk/index.php/2010/02/my-tribute-to-steve-ballmer/
 
 ## Run
 
-    ./run.sh inputUrl [outputFile [outputWidth]]
+    ./run.sh inputUrl [outputFile] [outputWidth]
     ./run.sh flickr keyword
+
+## Conscript
+
+Alternatively you can install and run using [Conscript](https://github.com/n8han/conscript).
+
+To install: `cs cb372/scala-ascii-art`
+
+To run: `aa`
+
+## Usage
 
 Pass either a local file or a URL:
 
@@ -34,3 +44,7 @@ Optionally pass an output file to save your amazing Ascii art for posterity. Sav
 If one Ascii art is not enough for you, use Flickr to generate an endless (ahem, not actually endless) stream of colourful characters.
 
     ./run.sh flickr cats
+
+## Samples
+
+See my [Scala Conf in Japan 2013 slides](https://docs.google.com/presentation/d/1nl07fNotSRZwAa8HVfd-9WUYPiMUrclCaeGSViJqdGQ/).
